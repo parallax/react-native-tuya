@@ -45,5 +45,29 @@ RCT_EXPORT_METHOD(startBluetoothScan:(RCTPromiseResolveBlock)resolver rejecter:(
     self.promiseResolveBlock([deviceInfo yy_modelToJSONObject]);
   }
 }
+RCT_EXPORT_METHOD(startNetworkScan:(NSString *)UUID (RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter) {
+  if (scannerInstance == nil) {
+    scannerInstance = [TuyaBLERNScannerModule new];
+  }
+
+  [ThingSmartBLEManager sharedInstance].delegate = scannerInstance;
+  scannerInstance.promiseResolveBlock = resolver;
+  scannerInstance.promiseRejectBlock = rejecter;
+
+  [[ThingSmartBLEManager sharedInstance] connectAndQueryWifiListWIthUUID:UUID success:^{
+      // Wait for activation
+    } failure:^ {
+      if (activatorInstance.promiseRejectBlock) {
+        [TuyaRNUtils rejecterWithError:nil handler:rejecter];
+      }
+      return;
+    ];
+}
+
+- (void)didScanWifiList:(nullable NSArray *)wifiList uuid:(nullable NSString *)uuid error:(nullable NSError *)error {
+  if (scannerInstance.promiseResolveBlock) {
+    self.promiseResolveBlock([wifiList yy_modelToJSONObject]);
+  }
+}
 
 @end

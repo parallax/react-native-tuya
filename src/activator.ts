@@ -51,6 +51,15 @@ export function initBluetoothDualModeActivator(
   return tuya.initBluetoothDualModeActivator(params);
 }
 
+export function queryDeviceAvailableWifiNetworks(
+  uuid: string
+): Promise<DeviceBean> {
+  if (Platform.OS === 'ios') {
+    return tuyaBLEScanner.startNetworkScan(uuid);
+  }
+  return tuya.startNetworkScan(uuid);
+}
+
 export function getCurrentWifi(
   success: (ssid: string) => void,
   error: () => void
