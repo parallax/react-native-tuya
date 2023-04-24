@@ -86,7 +86,7 @@ RCT_EXPORT_METHOD(startNetworkScan:(NSString *)uuid resolver:(RCTPromiseResolveB
 
   [[ThingSmartBLEWifiActivator sharedInstance] connectAndQueryWifiListWithUUID:uuid success:^{
       // Wait for activation
-    } failure:^ {
+    } failure:^(NSError *error) {
       if (activatorInstance.promiseRejectBlock) {
         [TuyaRNUtils rejecterWithError:nil handler:rejecter];
       }
