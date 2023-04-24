@@ -75,4 +75,30 @@ RCT_EXPORT_METHOD(initActivator:(NSDictionary *)params resolver:(RCTPromiseResol
 
 }
 
+RCT_EXPORT_METHOD(startNetworkScan:(NSString *)uuid resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter) {
+  if (activatorInstance == nil) {
+    activatorInstance = [TuyaBLERNActivatorModule new];
+  }
+
+  [ThingSmartBLEWifiActivator sharedInstance].bleWifiDelegate = activatorInstance;
+  activatorInstance.promiseResolveBlock = resolver;
+  activatorInstance.promiseRejectBlock = rejecter;
+
+  [[ThingSmartBLEWifiActivator sharedInstance] connectAndQueryWifiListWithUUID:uuid success:^{
+      // Wait for activation
+    } failure:^ {
+      if (activatorInstance.promiseRejectBlock) {
+        [TuyaRNUtils rejecterWithError:nil handler:rejecter];
+      }
+      return;
+    }];
+}
+
+- (void)didScanWifiList:(nullable NSArray *)wifiList uuid:(nullable NSString *)uuid error:(nullable NSError *)error {
+  if (activatorInstance.promiseResolveBlock) {
+    self.promiseResolveBlock([wifiList yy_modelToJSONObject]);
+  }
+}
+
+
 @end

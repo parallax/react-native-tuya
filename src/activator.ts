@@ -55,7 +55,7 @@ export function queryDeviceAvailableWifiNetworks(
   uuid: string
 ): Promise<DeviceBean> {
   if (Platform.OS === 'ios') {
-    return tuyaBLEScanner.startNetworkScan(uuid);
+    return tuyaBLEActivator.startNetworkScan(uuid);
   }
   return tuya.startNetworkScan(uuid);
 }
