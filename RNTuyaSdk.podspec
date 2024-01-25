@@ -19,6 +19,6 @@ Pod::Spec.new do |s|
 
   # Lock version of this to 5.1.0 to prevent further breaking changes
   s.dependency 'ThingSmartHomeKit', '>= 5.0.0'
-  s.dependency 'ThingBluetooth', '5.0.9.1'
+  s.dependency 'ThingBluetooth', '5.0.6'
 
 end
